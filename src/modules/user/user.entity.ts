@@ -6,6 +6,7 @@ import {
   OneToOne,
   JoinColumn,
   ManyToMany,
+  JoinTable,
 } from 'typeorm';
 import { UserDetails } from './user.details.entity';
 import { Role } from '../role/role.entity';
@@ -36,7 +37,7 @@ export class User extends BaseEntity {
     type => Role,
     role => role.users,
   )
-  @JoinColumn({ name: 'user_roles' })
+  @JoinTable({ name: 'user_roles' })
   roles: Role[];
 
   @Column({ type: 'varchar', default: 'ACTIVE', length: 8 })
