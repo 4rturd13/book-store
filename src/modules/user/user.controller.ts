@@ -23,14 +23,14 @@ export class UserController {
     return user;
   }
 
-  // @UseGuards(AuthGuard())
+  @UseGuards(AuthGuard())
   @Get()
   async getUsers(): Promise<User[]> {
     const users = await this._userService.getAll();
     return users;
   }
 
-  @Post('create')
+  @Post()
   async createUser(@Body() user: User): Promise<User> {
     const createUser = await this._userService.create(user);
     return createUser;
@@ -46,5 +46,13 @@ export class UserController {
   async deleteUser(@Param('id', ParseIntPipe) id: number) {
     await this._userService.delete(id);
     return true;
+  }
+
+  @Post('setRole/:userId/:roleId')
+  async setRoleToUser(
+    @Param('userId', ParseIntPipe) userId: number,
+    @Param('roleId', ParseIntPipe) roleId: number,
+  ) {
+    return this._userService.setRoleToUser(userId, roleId);
   }
 }
