@@ -13,6 +13,8 @@ import { User } from '../user/user.entity';
 import { compare } from 'bcryptjs';
 import { IJwtPayload } from './jwt-payload.interface';
 import { RoleType } from '../role/roletype.enum';
+import { plainToClass } from 'class-transformer';
+import { LoggedInDto } from './dto/logged-in.dto';
 
 @Injectable()
 export class AuthService {
@@ -34,7 +36,7 @@ export class AuthService {
     return this._authRepository.signup(SignupDto);
   }
 
-  async signin(SigninDto: SigninDto): Promise<{ token: string }> {
+  async signin(SigninDto: SigninDto): Promise<LoggedInDto> {
     const { username, password } = SigninDto;
 
     const user: User = await this._authRepository.findOne({
@@ -57,8 +59,8 @@ export class AuthService {
       username: user.username,
       roles: user.roles.map(r => r.name as RoleType),
     };
-    const token = await this._jwtService.sign(payload);
+    const token = this._jwtService.sign(payload);
 
-    return { token };
+    return plainToClass(LoggedInDto, { token, user });
   }
 }
